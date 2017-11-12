@@ -2,8 +2,8 @@ package com.judysen.quartz.service;
 
 public interface NoticeService {
 	
-	public void sendMQmsg(String targetBeanId, String executorNo, String executeParamter);
+	public String sendMQmsg(String targetBeanId, String executorNo, String executeParamter) throws Exception;
 
-	public void httpRequest(String url, String executeParamter);
+	public String httpRequest(String url, String executeParamter) throws Exception;
 
 }

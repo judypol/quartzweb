@@ -1,5 +1,7 @@
 package com.judysen.quartz.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.judysen.quartz.core.QuartzJobFactory;
 import com.judysen.quartz.dao.TaskErrorsDao;
 import com.judysen.quartz.dao.TaskInformationsDao;
@@ -30,7 +32,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service("quartzService")
@@ -44,7 +48,7 @@ public class QuartzServiceImpl implements QuartzService {
 	private TaskRecordsDaoImpl recordsDao;
 	@Autowired
 	private TaskErrorsDaoImpl taskErrorsDao;
-	@Resource
+	@Autowired
 	SchedulerFactoryBean schedulerBean;
 	@Autowired
 	private NoticeService noticeService;
@@ -159,7 +163,8 @@ public class QuartzServiceImpl implements QuartzService {
 	
 	public void scheduler(TaskInformationsEntity task,Scheduler scheduler){
 		TriggerKey triggerKey = TriggerKey.triggerKey(task.getTaskNo(), Scheduler.DEFAULT_GROUP);
-		JobDetail jobDetail = JobBuilder.newJob(QuartzJobFactory.class).withDescription(task.getTaskName()).withIdentity(task.getTaskNo(), Scheduler.DEFAULT_GROUP).build();
+		JobDetail jobDetail = JobBuilder.newJob(QuartzJobFactory.class).withDescription(task.getTaskName())
+				.withIdentity(task.getTaskNo(), Scheduler.DEFAULT_GROUP).build();
 		jobDetail.getJobDataMap().put("targetObjectId", task.getTaskNo());
 		jobDetail.getJobDataMap().put("executorNo", task.getExecutorNo());
 		jobDetail.getJobDataMap().put("sendType", task.getSendType());
@@ -184,6 +189,7 @@ public class QuartzServiceImpl implements QuartzService {
 	public String executeOnce(String taskNo){
 		TaskInformationsEntity entity = taskInformationsDao.getTaskByTaskNo(taskNo);
 		String msg = "执行成功";
+		String res="";
 		if(null != entity){
 			TaskRecordsEntity recordsEntity =null;
 			try {
@@ -193,22 +199,16 @@ public class QuartzServiceImpl implements QuartzService {
 					return "执行失败，该任务已冻结或该时间段可能已经执行。";
 				}
 				if(Const.ACTIVE_MQ.equals(entity.getSendType())){
-					try {
-						noticeService.sendMQmsg(taskNo,entity.getExecutorNo(),entity.getExecuteParamter());
-					} catch (Exception e) {
-						// TODO: handle exception
-						logger.error("sendMQmsg send is failed：", e);
-						ai.incrementAndGet();
-						throw e;
-					}
+//					try {
+//						noticeService.sendMQmsg(taskNo,entity.getExecutorNo(),entity.getExecuteParamter());
+//					} catch (Exception e) {
+//						// TODO: handle exception
+//						logger.error("sendMQmsg send is failed：", e);
+//						ai.incrementAndGet();
+//						throw e;
+//					}
 				}else if (Const.URL_REQUEST.equals(entity.getSendType())){
-					try {
-						noticeService.httpRequest(entity.getUrl(),entity.getExecuteParamter());
-					} catch (Exception e) {
-						logger.error("http request is failed：",e);
-						ai.incrementAndGet();
-						throw e;
-					}
+					res=executeHttp(entity);
 				}else{
 					return "不支持当前类型";
 				}
@@ -223,18 +223,28 @@ public class QuartzServiceImpl implements QuartzService {
 				}
 				updateTaskInformations(taskNo);
 			}
-			/*finally{
-				if(null!=recordsEntity){
-					recordsEntity = modifyTaskRecord(ai.get(), recordsEntity.getId());
-				}
-				updateTaskInformations(taskNo);
-			}*/
 		}else{
 			return "当前任务不存在";
 		}
 		return msg;
 	}
-	
+	private String executeHttp(TaskInformationsEntity entity) throws Exception{
+		try {
+			Map<String,String> params=new HashMap<>();
+			params.put("ServiceName",entity.getServiceName());
+			params.put("MethodName",entity.getMethodName());
+			params.put("Params",entity.getMethodName());
+			JSONObject jsonObject=new JSONObject();
+			jsonObject.put("json", JSON.toJSONString(params));
+
+			String res=noticeService.httpRequest(entity.getUrl(),jsonObject.toJSONString());
+			return res;
+		} catch (Exception e) {
+			logger.error("http request is failed：",e);
+			ai.incrementAndGet();
+			throw e;
+		}
+	}
 	/**
 	 * 执行前操作
 	 * @return
