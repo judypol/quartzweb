@@ -60,9 +60,11 @@ public class QuartzServiceImpl implements QuartzService {
 		Scheduler scheduler = schedulerBean.getScheduler();
 		for(TaskInformationsEntity task : taskList){
 			try {
-				this.scheduler(task, scheduler);
+				if(task.getFrozenStatus()==TaskStatusEnum.UNFROZEN){		//冻结的task不进
+					this.scheduler(task, scheduler);
+				}
 			} catch (Exception e) {
-				logger.error("定时：" + task.getTaskNo() + "启动失败");
+				logger.error("定时：" + task.getId()+ "启动失败");
 			}
 		}
 	}
@@ -162,10 +164,10 @@ public class QuartzServiceImpl implements QuartzService {
 	}
 	
 	public void scheduler(TaskInformationsEntity task,Scheduler scheduler){
-		TriggerKey triggerKey = TriggerKey.triggerKey(task.getTaskNo(), Scheduler.DEFAULT_GROUP);
+		TriggerKey triggerKey = TriggerKey.triggerKey(task.getId(), Scheduler.DEFAULT_GROUP);
 		JobDetail jobDetail = JobBuilder.newJob(QuartzJobFactory.class).withDescription(task.getTaskName())
-				.withIdentity(task.getTaskNo(), Scheduler.DEFAULT_GROUP).build();
-		jobDetail.getJobDataMap().put("targetObjectId", task.getTaskNo());
+				.withIdentity(task.getId(), Scheduler.DEFAULT_GROUP).build();
+		jobDetail.getJobDataMap().put("targetObjectId", task.getId());
 		jobDetail.getJobDataMap().put("executorNo", task.getExecutorNo());
 		jobDetail.getJobDataMap().put("sendType", task.getSendType());
 		jobDetail.getJobDataMap().put("url", task.getUrl());
@@ -174,7 +176,7 @@ public class QuartzServiceImpl implements QuartzService {
 		CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
 		try {
 			scheduler.scheduleJob(jobDetail, trigger);
-			logger.info("task "+task.getTaskNo()+" schedulerRule :"+task.getSchedulerRule()+" reload succeed");
+			logger.info("task "+task.getId()+" schedulerRule :"+task.getSchedulerRule()+" reload succeed");
 		} catch (Exception e) {
 			logger.error("scheduler--异常：",e);
 			throw new RuntimeException();
@@ -264,7 +266,7 @@ public class QuartzServiceImpl implements QuartzService {
 				logger.info("task no :" + taskNo + " this time " + timeKeyValue + " hava been executed");
 				return null;
 			}
-			taskInformationsEntity.setFrozenStatus(TaskStatusEnum.FROZEN);
+			taskInformationsEntity.setFrozenStatus(TaskStatusEnum.RUNNING);
 			taskInformationsEntity.setFrozenTime(DateUtils.getSysDateTimeString());
 			taskInformationsEntity.setLastModifyTime(DateUtils.getSysDateTimeString());
 			taskInformationsDao.updateById(taskInformationsEntity);
@@ -310,7 +312,7 @@ public class QuartzServiceImpl implements QuartzService {
 	
 	public void updateTaskInformations(String taskNo){
 		TaskInformationsEntity taskInformationsEntity = taskInformationsDao.getTaskByTaskNo(taskNo);
-		if(null != taskInformationsEntity && TaskStatusEnum.FROZEN == taskInformationsEntity.getFrozenStatus()){
+		if(null != taskInformationsEntity){
 			try {
 				taskInformationsEntity.setFrozenStatus(TaskStatusEnum.UNFROZEN);
 				taskInformationsEntity.setUnfrozenTime(DateUtils.getSysDateTimeString());
@@ -368,7 +370,7 @@ public class QuartzServiceImpl implements QuartzService {
 				// 重新装载定时器
 				Scheduler scheduler = schedulerBean.getScheduler();
 				try {
-					scheduler.deleteJob(new JobKey(entity.getTaskNo()));
+					scheduler.deleteJob(new JobKey(entity.getId()));
 					if(TaskStatusEnum.UNFROZEN == entity.getFrozenStatus()){
 						this.scheduler(entity, scheduler);
 					}
@@ -386,7 +388,7 @@ public class QuartzServiceImpl implements QuartzService {
 		}else{
 			entity.setCreateTime(DateUtils.getSysDateTimeString());
 			entity.setLastModifyTime(DateUtils.getSysDateTimeString());
-			TaskInformationsDetailVo vo =taskInformationsDao.getTaskDetail(entity.getTaskNo());
+			TaskInformationsDetailVo vo =taskInformationsDao.getTaskDetail(entity.getId());
 			// 增加
 			if(vo==null){
 				count = taskInformationsDao.addTaskInformation(entity);

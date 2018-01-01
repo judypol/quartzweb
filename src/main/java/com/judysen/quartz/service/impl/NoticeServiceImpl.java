@@ -29,7 +29,8 @@ public class NoticeServiceImpl implements NoticeService {
 	 * @param executorNo
 	 * @param executeParamter
 	 */
-	public void sendMQmsg(String targetBeanId,String executorNo,String executeParamter) throws Exception {
+	public String sendMQmsg(String targetBeanId,String executorNo,String executeParamter) throws Exception {
+		return null;
 //		try {
 //			if (StringUtils.isBlank(targetBeanId)|| StringUtils.isBlank(executorNo)) {
 //				logger.error("param is null ");
@@ -52,19 +53,39 @@ public class NoticeServiceImpl implements NoticeService {
 	 * @param executeParamter
 	 * @param url
 	 */
-	public void httpRequest(String url,String executeParamter) throws Exception{
+	public String httpRequest(String url,String executeParamter) throws Exception{
 		try {
 			if(StringUtils.isBlank(url)){
 				logger.error("param is null ");
-				return;
+				return null;
 			}
 
 			String res = OkHttpUtil.doPost(url,executeParamter);
 			
 			logger.info("http request result is "+res);
+			return null;
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.error("http request is failed：",e);
+			throw e;
+		}
+	}
+
+	@Override
+	public String rpcRequest(String url, String executeParamter) throws Exception {
+		try{
+			if(StringUtils.isEmpty(url)){
+				logger.error("url is null");
+				return null;
+			}
+			if(StringUtils.isEmpty(executeParamter)){
+				logger.error("param is null");
+				return null;
+			}
+			//---RPC 调用----
+			return "";
+		}catch (Exception e){
+			logger.error("rpc request is failed: ",e);
 			throw e;
 		}
 	}

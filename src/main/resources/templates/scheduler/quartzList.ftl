@@ -20,7 +20,6 @@
                             <table width="100%">
                                 <thead>
                                 <tr>
-                                    <th width="">任务编号</th>
                                     <th width="">任务名称</th>
                                     <th width="">定时配置</th>
                                     <th width="">冻结状态</th>
@@ -33,7 +32,6 @@
                                 <tbody>
                                     <template v-for="item in taskList">
                                         <tr>
-                                            <td align="center">{{item.taskNo}}</td>
                                             <td align="center">{{item.taskName}}</td>
                                             <td align="center">{{item.schedulerRule}}</td>
                                             <td align="center">
@@ -44,14 +42,16 @@
                                             <td align="center">{{item.sendType}}</td>
                                             <td align="center">{{item.lastModifyTime}}</td>
                                             <td align="center">
-                                                <button v-if="item.frozenStatus=='FROZEN'" @click="start(item.taskNo)">启动</button>
-                                                <template v-if="item.frozenStatus=='UNFROZEN'" >
-                                                    <button @click="restart(item.taskNo)">重启</button>
-                                                    <button @click="pause(item.taskNo)">暂停</button>
+                                                <template v-if="item.frozenStatus!='RUNNING'">
+                                                    <button v-if="item.frozenStatus=='FROZEN'" @click="start(item.id)">启动</button>
+                                                    <template v-if="item.frozenStatus=='UNFROZEN'" >
+                                                        <button @click="restart(item.id)">重启</button>
+                                                        <button @click="pause(item.id)">暂停</button>
+                                                    </template>
+                                                    <button @click="execute(item.id)">立刻运行</button>
                                                 </template>
-                                                <button @click="execute(item.taskNo)">立刻运行</button>
                                                 <a :href="'/scheduler/taskEditPage/'+item.id">修改</a>
-                                                <a :href="'/scheduler/detail/'+item.taskNo">详情</a>
+                                                <a :href="'/scheduler/detail/'+item.id">详情</a>
                                             </td>
                                         </tr>
                                     </template>

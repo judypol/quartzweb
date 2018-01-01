@@ -11,5 +11,5 @@ package com.judysen.quartz.enums;
  */
 public enum TaskStatusEnum {
 
-	INIT, FROZEN, UNFROZEN;
+	INIT, FROZEN, UNFROZEN,RUNNING;
 }

@@ -35,16 +35,16 @@ public class SchedulerController extends BaseController{
 
 	/**
 	 * 重启指定任务
-	 * @param jobKey
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/resumeScheduler")
 	public @ResponseBody
-    String resumeScheduler(String jobKey){
+    String resumeScheduler(String taskNo){
 		logger.info("开始重新调度任务");
 		String msg = null;
 		try {
-			msg = quartzServer.resumeScheduler(jobKey);
+			msg = quartzServer.resumeScheduler(taskNo);
 			logger.info("重新调度任务完成");
 			return msg;
 		} catch (Exception e) {
@@ -113,8 +113,6 @@ public class SchedulerController extends BaseController{
 	@RequestMapping("/list/{currentPage}")
 	public ModelAndView getTaskInformationsList(@PathVariable int currentPage){
 		ModelAndView view = new ModelAndView("/scheduler/quartzList");
-		//Page<TaskInformationsVo> voList = quartzServer.getList(currentPage);
-		//int count = voList.getTotalPages();
 		return view;
 	}
 	@RequestMapping("/getTaskInfoList")
@@ -179,14 +177,14 @@ public class SchedulerController extends BaseController{
 		if(!StringUtils.isEmpty(count)){
 			if("-10000".equals(count)){
 				rm.setStatus(false);
-				rm.setMessage(entity.getTaskNo()+"任务已经存在！");
+				rm.setMessage(entity.getId()+"任务已经存在！");
 			}else{
 				rm.setStatus(true);
-				rm.setMessage("创建任务"+entity.getTaskNo()+"成功！");
+				rm.setMessage("创建任务"+entity.getId()+"成功！");
 			}
 		}else{
 			rm.setStatus(false);
-			rm.setMessage("创建任务"+entity.getTaskNo()+"失败！");
+			rm.setMessage("创建任务"+entity.getId()+"失败！");
 		}
 		return JSON.toJSONString(rm);
 	}

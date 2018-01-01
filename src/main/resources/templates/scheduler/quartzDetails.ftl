@@ -9,7 +9,6 @@
                     <div class="label"></div>
                     <div class="info" id="taskDetails"  v-cloak>
                         <input type="hidden" value="${taskNo}" ref="taskNo"/>
-                        <p><span>任务编号 ：</span><span>{{detail.taskNo }}</span></p>
                         <p><span>任务名称 ：</span><span>{{detail.taskName }}</span></p>
                         <p><span>定时配置 ：</span><span>{{detail.schedulerRule }}</span></p>
                         <p><span>冻结状态 ：</span><span>{{detail.frozenStatus }}</span></p>
@@ -19,7 +18,6 @@
                         <p><span>执行方式 ：</span><span>{{detail.sendType }}</span></p>
                         <p><span>url ：</span><span>{{detail.url }}</span></p>
                         <p><span>执行参数 ：</span><span>{{detail.executeParamter }}</span></p>
-                        <p><span>timeKey ：</span><span>{{detail.timeKey }}</span></p>
                         <p><span>创建时间 ：</span><span>{{detail.createTime }}</span></p>
                         <p><span>修改时间 ：</span><span>{{detail.lastModifyTime }}</span></p>
                         <p><span>上一次执行时间 ：</span><span>{{detail.preExecuteTime }}</span></p>
@@ -28,6 +26,7 @@
                 </div>
             </div>
             <div class="m-action"><a href="javascript:history.back(-1);" class="u-button">关闭</a> </div>
+            <div class="m-action"><a href="/records/taskRecords/${taskNo}/1/status" class="u-button">执行记录</a> </div>
         </div>
     </div>
 </div>

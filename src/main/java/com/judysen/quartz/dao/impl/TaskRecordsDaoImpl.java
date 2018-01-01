@@ -6,6 +6,7 @@ import com.judysen.quartz.enums.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -54,11 +55,20 @@ public class TaskRecordsDaoImpl{
 			return null;
 		}
 	}
-	
+
+	/**
+	 * 获取任务记录
+	 * @param taskNo
+	 * @param currentPage
+	 * @param taskStatus
+	 * @return
+	 */
 	public Page<TaskRecordsEntity> getListByTaskNo(String taskNo,int currentPage,String taskStatus){
 		TaskRecordsEntity entity=new TaskRecordsEntity();
 		entity.setTaskNo(taskNo);
-		entity.setTaskStatus(StatusEnum.valueOf(taskStatus));
+		if(!StringUtils.isEmpty(taskStatus)){
+			entity.setTaskStatus(StatusEnum.valueOf(taskStatus));
+		}
 
 		Page<TaskRecordsEntity> pageList = taskRecordsDao.findAll(Example.of(entity), new PageRequest(currentPage,15));
 		return pageList;

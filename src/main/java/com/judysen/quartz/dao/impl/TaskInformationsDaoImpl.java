@@ -33,7 +33,7 @@ public class TaskInformationsDaoImpl {
 	 */
 	public TaskInformationsEntity getTaskByTaskNo(String taskNo){
 		TaskInformationsEntity informationsEntity=new TaskInformationsEntity();
-		informationsEntity.setTaskNo(taskNo);
+		informationsEntity.setId(taskNo);
 		TaskInformationsEntity entity = taskInformationsDao.findOne(Example.of(informationsEntity));
 		return entity;
 	}
@@ -57,7 +57,6 @@ public class TaskInformationsDaoImpl {
 		Page<TaskInformationsVo> pageList=null;
 		for(TaskInformationsEntity entity:list){
 			TaskInformationsVo vo=new TaskInformationsVo();
-			vo.setTaskNo(entity.getTaskNo());
 			vo.setExecuteParamter(entity.getExecuteParamter());
 			vo.setExecutorNo(entity.getExecutorNo());
 			vo.setFrozenStatus(entity.getFrozenStatus().name());
@@ -76,12 +75,11 @@ public class TaskInformationsDaoImpl {
 	
 	public TaskInformationsDetailVo getTaskDetail(String taskNo){
 		TaskInformationsEntity example=new TaskInformationsEntity();
-		example.setTaskNo(taskNo);
+		example.setId(taskNo);
 		TaskInformationsEntity entity=taskInformationsDao.findOne(Example.of(example));
 		TaskInformationsDetailVo vo=null;
 		if(entity!=null){
 			vo=new TaskInformationsDetailVo();
-			vo.setTaskNo(entity.getTaskNo());
 			vo.setTimeKey(entity.getTimeKey());
 			vo.setLastModifyTime(entity.getLastModifyTime());
 			vo.setFrozenStatus(entity.getFrozenStatus().name());

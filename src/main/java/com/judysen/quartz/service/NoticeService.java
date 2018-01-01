@@ -6,4 +6,6 @@ public interface NoticeService {
 
 	public String httpRequest(String url, String executeParamter) throws Exception;
 
+	public String rpcRequest(String url,String executeParamter) throws Exception;
+
 }

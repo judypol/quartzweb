@@ -12,16 +12,16 @@
                         <form id="taskForm">
                             <input value="${id}" ref="taskId" type="hidden">
                             <div class="form-edit-address f-cf">
-                                <div class="item">
-                                    <div class="label">任务编号：</div>
-                                    <div class="info">
-                                        <div class="u-text">
-                                            <input type="text" name="taskNo" id="taskNo" v-model="taskInfo.taskNo"
-                                                   maxlength="50"/>
-                                        </div>
-                                        <div class="u-tips" style="display:block;" id="taskNoErr"></div>
-                                    </div>
-                                </div>
+                                <#--<div class="item">-->
+                                    <#--<div class="label">任务编号：</div>-->
+                                    <#--<div class="info">-->
+                                        <#--<div class="u-text">-->
+                                            <#--&lt;#&ndash;<input type="text" name="taskNo" id="taskNo" v-model="taskInfo.taskNo"&ndash;&gt;-->
+                                                   <#--&lt;#&ndash;maxlength="50"/>&ndash;&gt;-->
+                                            <#--<span id="taskNo">{taskInfo.taskNo}</span>-->
+                                        <#--</div>-->
+                                    <#--</div>-->
+                                <#--</div>-->
                                 <div class="item">
                                     <div class="label">任务名称：</div>
                                     <div class="info">
@@ -78,6 +78,7 @@
                                         <div class="u-text">
                                             <select id="sendType" name="sendType" v-model="taskInfo.sendType">
                                             <#--<option value="mq">mq</option>-->
+                                                <option value="http">rpc</option>
                                                 <option value="http">http</option>
                                             </select>
                                         </div>
@@ -102,16 +103,16 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="item">
-                                    <div class="label">timeKey：</div>
-                                    <div class="info">
-                                        <div class="u-text">
-                                            <input type="text" id="timeKey" name="timeKey"
-                                                   v-model="taskInfo.timeKey"/><span>(如：yyyy-MM-dd HH:mm)</span>
-                                        </div>
-                                        <div class="u-tips" style="display:block;" id="timeKeyErr"></div>
-                                    </div>
-                                </div>
+                                <#--<div class="item">-->
+                                    <#--<div class="label">timeKey：</div>-->
+                                    <#--<div class="info">-->
+                                        <#--<div class="u-text">-->
+                                            <#--<input type="text" id="timeKey" name="timeKey"-->
+                                                   <#--v-model="taskInfo.timeKey"/><span>(如：yyyy-MM-dd HH:mm)</span>-->
+                                        <#--</div>-->
+                                        <#--<div class="u-tips" style="display:block;" id="timeKeyErr"></div>-->
+                                    <#--</div>-->
+                                <#--</div>-->
                                 <div class="item">
                                     <div class="info">
                                         <input type="button" id="edit" value="保存" class="u-button" @click="save()"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -150,8 +151,6 @@
         mounted: function () {
             var id = this.$refs.taskId.value;
             var _self = this;
-//            axiosUtils.requestInterceptors();
-//            axiosUtils.responseInterceptors();
             axiosUtils.post('/scheduler/taskInfo', {id: id})
                     .then(function (res) {
                         _self.taskInfo=res.data;
@@ -167,8 +166,6 @@
             alert:function(title,onClose){
                 var obj={
                     title: title,
-                    //useConfirmBtn: true,
-                    //customConfirmBtnText: '确定',
                     customCloseBtnText:'确定',
                     onClose:onClose
                 };

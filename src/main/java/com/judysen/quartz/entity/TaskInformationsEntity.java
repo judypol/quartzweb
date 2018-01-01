@@ -10,7 +10,6 @@ public class TaskInformationsEntity extends Entity{
 	@Id
 	private String id;
 	private Integer version;
-	private String taskNo;
 	private String taskName;
 	private String schedulerRule;
 	private TaskStatusEnum frozenStatus;
@@ -106,14 +105,6 @@ public class TaskInformationsEntity extends Entity{
 
 	public void setVersion(Integer version) {
 		this.version = version;
-	}
-
-	public String getTaskNo() {
-		return taskNo;
-	}
-
-	public void setTaskNo(String taskNo) {
-		this.taskNo = taskNo;
 	}
 
 	public String getTaskName() {

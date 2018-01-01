@@ -4,7 +4,6 @@ package com.judysen.quartz.vo;
 public class TaskInformationsVo {
 
 	private String id;
-	private String taskNo;
 	private String taskName;
 	private String schedulerRule;
 	private String frozenStatus;
@@ -21,14 +20,6 @@ public class TaskInformationsVo {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getTaskNo() {
-		return taskNo;
-	}
-
-	public void setTaskNo(String taskNo) {
-		this.taskNo = taskNo;
 	}
 
 	public String getTaskName() {
