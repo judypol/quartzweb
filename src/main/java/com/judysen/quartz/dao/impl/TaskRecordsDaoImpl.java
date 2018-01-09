@@ -65,12 +65,14 @@ public class TaskRecordsDaoImpl{
 	 */
 	public Page<TaskRecordsEntity> getListByTaskNo(String taskNo,int currentPage,String taskStatus){
 		TaskRecordsEntity entity=new TaskRecordsEntity();
+		//entity.setTaskNo(taskNo);
 		entity.setTaskNo(taskNo);
 		if(!StringUtils.isEmpty(taskStatus)){
 			entity.setTaskStatus(StatusEnum.valueOf(taskStatus));
 		}
-
-		Page<TaskRecordsEntity> pageList = taskRecordsDao.findAll(Example.of(entity), new PageRequest(currentPage,15));
+		ExampleMatcher matcher=ExampleMatcher.matching();
+		Example<TaskRecordsEntity> example=Example.of(entity,matcher);
+		Page<TaskRecordsEntity> pageList = taskRecordsDao.findAll(example, new PageRequest(currentPage,15));
 		return pageList;
 	}
 }

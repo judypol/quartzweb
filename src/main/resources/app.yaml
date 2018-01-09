@@ -1,0 +1,7 @@
+#平台名
+inner:
+   quartz:
+      name: 定时任务
+      MidTierUrl: http://192.168.60.204:5412/shcem
+      authApp: quartz
+      #logback: c:/mltp/logback.xml

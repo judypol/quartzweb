@@ -78,7 +78,7 @@
                                         <div class="u-text">
                                             <select id="sendType" name="sendType" v-model="taskInfo.sendType">
                                             <#--<option value="mq">mq</option>-->
-                                                <option value="http">rpc</option>
+                                                <option value="rpc">rpc</option>
                                                 <option value="http">http</option>
                                             </select>
                                         </div>

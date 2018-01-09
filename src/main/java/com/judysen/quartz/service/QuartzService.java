@@ -4,6 +4,7 @@ import com.judysen.quartz.entity.TaskInformationsEntity;
 import com.judysen.quartz.entity.TaskRecordsEntity;
 import com.judysen.quartz.vo.TaskInformationsDetailVo;
 import com.judysen.quartz.vo.TaskInformationsVo;
+import javafx.concurrent.Task;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface QuartzService {
 	
 	public void updateTaskInformations(String taskNo);
 	
-	public TaskRecordsEntity modifyTaskRecord(int failCount, String taskRecordsId);
+	public TaskRecordsEntity modifyTaskRecord(TaskRecordsEntity entity);
 
 	public void saveTaskErrors(String taskRecordsId, String key, String values);
 	

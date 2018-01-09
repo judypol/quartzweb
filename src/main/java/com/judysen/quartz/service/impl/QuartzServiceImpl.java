@@ -211,7 +211,9 @@ public class QuartzServiceImpl implements QuartzService {
 //					}
 				}else if (Const.URL_REQUEST.equals(entity.getSendType())){
 					res=executeHttp(entity);
-				}else{
+				}else if(Const.RPC_REQUEST.equals(entity.getSendType())){
+					res=noticeService.rpcRequest(entity.getUrl(),entity.getExecuteParamter());
+				} else{
 					return "不支持当前类型";
 				}
 			} catch (Exception e) {
@@ -221,7 +223,8 @@ public class QuartzServiceImpl implements QuartzService {
 			}
 			if(ai.get() > 0){
 				if(null!=recordsEntity){
-					recordsEntity = modifyTaskRecord(ai.get(), recordsEntity.getId());
+					recordsEntity.setFailcount(ai.get());
+					recordsEntity = modifyTaskRecord(recordsEntity);
 				}
 				updateTaskInformations(taskNo);
 			}
@@ -232,14 +235,8 @@ public class QuartzServiceImpl implements QuartzService {
 	}
 	private String executeHttp(TaskInformationsEntity entity) throws Exception{
 		try {
-			Map<String,String> params=new HashMap<>();
-			params.put("ServiceName",entity.getServiceName());
-			params.put("MethodName",entity.getMethodName());
-			params.put("Params",entity.getMethodName());
-			JSONObject jsonObject=new JSONObject();
-			jsonObject.put("json", JSON.toJSONString(params));
 
-			String res=noticeService.httpRequest(entity.getUrl(),jsonObject.toJSONString());
+			String res=noticeService.httpRequest(entity.getUrl(),entity.getExecuteParamter());
 			return res;
 		} catch (Exception e) {
 			logger.error("http request is failed：",e);
@@ -281,15 +278,15 @@ public class QuartzServiceImpl implements QuartzService {
 	/**
 	 * 保存定时记录表
 	 * @param taskNo
-	 * @param timeKey
+	 * @param timeKeyValue
 	 */
 	public TaskRecordsEntity saveTaskRecords(String taskNo,String timeKeyValue){
 		TaskRecordsEntity entity = new TaskRecordsEntity();
 		try {
-			entity.setCreateTime(String.valueOf(DateUtil.getLastModifyTime()));
-			entity.setExecuteTime(String.valueOf(DateUtil.getLastModifyTime()));
+			entity.setCreateTime(String.valueOf(DateUtils.getSysDateTimeString()));
+			entity.setExecuteTime(String.valueOf(DateUtils.getSysDateTimeString()));
 			entity.setFailcount(0);
-			entity.setLastModifyTime(String.valueOf(DateUtil.getLastModifyTime()));
+			entity.setLastModifyTime(String.valueOf(DateUtils.getSysDateTimeString()));
 			entity.setTaskNo(taskNo);
 			entity.setTaskStatus(StatusEnum.INIT);
 			entity.setTimeKeyValue(timeKeyValue);
@@ -326,14 +323,9 @@ public class QuartzServiceImpl implements QuartzService {
 	
 	/**
 	 * 更新任务记录表
-	 * @param failCount
-	 * @param taskRecordsId
 	 */
-	public TaskRecordsEntity modifyTaskRecord(int failCount,String taskRecordsId){
-		TaskRecordsEntity entity = new TaskRecordsEntity();
-		entity.setId(taskRecordsId);
-		entity.setFailcount(failCount);
-		if(failCount > 0){
+	public TaskRecordsEntity modifyTaskRecord(TaskRecordsEntity entity){
+		if(entity.getFailcount() > 0){
 			entity.setTaskStatus(StatusEnum.FAILED);
 		}else{
 			entity.setTaskStatus(StatusEnum.SUCCESS);

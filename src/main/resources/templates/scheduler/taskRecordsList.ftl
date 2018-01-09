@@ -55,15 +55,15 @@
                             <tbody>
 
                                 <tr v-for="task in recordList">
-                                    <td align="center">{task.timeKeyValue }</td>
-                                    <td align="center">{task.executeTime }</td>
-                                    <td align="center">{task.time }</td>
+                                    <td align="center">{{task.timeKeyValue}}</td>
+                                    <td align="center">{{task.executeTime}}</td>
+                                    <td align="center">{{task.time}}</td>
                                     <td align="center">
                                         <span v-if="task.taskStatus == 'INIT'">初始</span>
                                         <span v-else-if="task.taskStatus == 'SUCCESS'">成功</span>
                                         <a href="/taskErrors/getErrors/{task.id}" v-else="{task.taskStatus == 'FAILED'}">失败</c:if></a>
                                     </td>
-                                    <td align="center">{task.failcount }</td>
+                                    <td align="center">{{task.failcount}}</td>
                                 </tr>
 
                             </tbody>
@@ -81,7 +81,8 @@
     var app=new Vue({
         el:"#taskRecords",
         data:{
-            recordList:[]
+            recordList:[],
+            status:'status'
         },
         mounted:function(){
             var _self=this;

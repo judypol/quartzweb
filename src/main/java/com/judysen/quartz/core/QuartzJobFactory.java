@@ -58,13 +58,15 @@ public class QuartzJobFactory implements Job {
             quartzService.saveTaskErrors(String.valueOf(recordsEntity.getId()), executorNo + e.getMessage(), ExceptionUtils.getStackTrace(e));
         }finally {
             if(null!=recordsEntity){
-                recordsEntity = quartzService.modifyTaskRecord(ai.get(), recordsEntity.getId());
+                recordsEntity.setFailcount(ai.get());
+                recordsEntity = quartzService.modifyTaskRecord(recordsEntity);
             }
             quartzService.updateTaskInformations(targetBeanId);
         }
         if (ai.get() > 0) {
-            if (null != recordsEntity) {
-                recordsEntity = quartzService.modifyTaskRecord(ai.get(), recordsEntity.getId());
+            if(null!=recordsEntity){
+                recordsEntity.setFailcount(ai.get());
+                recordsEntity = quartzService.modifyTaskRecord(recordsEntity);
             }
             quartzService.updateTaskInformations(targetBeanId);
         }

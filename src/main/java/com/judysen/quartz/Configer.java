@@ -1,5 +1,7 @@
 package com.judysen.quartz;
 
+import com.shcem.common.MidTierRequest;
+import com.shcem.utils.SpringContextHolder;
 import freemarker.template.TemplateException;
 import org.apache.catalina.filters.CorsFilter;
 import org.springframework.context.annotation.Bean;
@@ -100,5 +102,13 @@ public class Configer extends WebMvcConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", buildConfig()); // 4
         return new CorsFilter();
+    }
+    @Bean
+    public SpringContextHolder springContextHolder(){
+        return new SpringContextHolder();
+    }
+    @Bean
+    public MidTierRequest midTierRequest(){
+        return new MidTierRequest();
     }
 }

@@ -23,9 +23,6 @@ public class TaskInformationsEntity extends Entity{
 	private String lastModifyTime;
 	private String timeKey;
 //--执行服务方法
-	private String serviceName;
-	private String methodName;
-	private String params;
 
 	public String getTimeKey() {
 		return timeKey;
@@ -139,27 +136,4 @@ public class TaskInformationsEntity extends Entity{
 		this.executorNo = executorNo;
 	}
 
-	public String getServiceName() {
-		return serviceName;
-	}
-
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
-
-	public String getMethodName() {
-		return methodName;
-	}
-
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
-	}
-
-	public String getParams() {
-		return params;
-	}
-
-	public void setParams(String params) {
-		this.params = params;
-	}
 }
